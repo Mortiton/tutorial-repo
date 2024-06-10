@@ -7,6 +7,11 @@ import NewPost from "./NewPost";
 export default function PostList() {
   const [enteredBody, setEnteredBody] = useState("");
   const [enteredAuthor, setEnteredAuthor] = useState("");
+  const [modalIsOpen, setModalIsOpen] = useState(true);
+
+  function hideModalHandler() {
+    setModalIsOpen(false);
+  }
 
   function bodyChangeHandler(event) {
     setEnteredBody(event.target.value);
@@ -16,14 +21,22 @@ export default function PostList() {
     setEnteredAuthor(event.target.value);
   }
 
+  let modalContent;
+
+  if (modalIsOpen) {
+    modalContent = (
+      <Modal onClose={hideModalHandler}>
+      <NewPost
+        onBodyChange={bodyChangeHandler}
+        onAuthorChange={authorChangeHandler}
+      />
+    </Modal>
+    );
+  }
+
   return (
     <>
-      <Modal>
-        <NewPost
-          onBodyChange={bodyChangeHandler}
-          onAuthorChange={authorChangeHandler}
-        />
-      </Modal>
+      {modalContent}
       <ul className={styles.posts}>
         <Post author={enteredAuthor} body={enteredBody} />
         <Post author="Zoe" body="Learning isn't fun" />
