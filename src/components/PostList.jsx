@@ -4,43 +4,34 @@ import Post from "./Post";
 import styles from "./PostlList.module.css";
 import NewPost from "./NewPost";
 
-export default function PostList() {
-  const [enteredBody, setEnteredBody] = useState("");
-  const [enteredAuthor, setEnteredAuthor] = useState("");
-  const [modalIsOpen, setModalIsOpen] = useState(true);
+export default function PostList({ isPosting, onStopPosting }) {
+ const [posts, setPosts] = useState([]);
 
-  function hideModalHandler() {
-    setModalIsOpen(false);
-  }
-
-  function bodyChangeHandler(event) {
-    setEnteredBody(event.target.value);
-  }
-
-  function authorChangeHandler(event) {
-    setEnteredAuthor(event.target.value);
-  }
+ function addPostHandler(postData) {
+  setPosts((existingPosts) => [postData, ...existingPosts]);
+ }
+ 
 
   let modalContent;
 
-  if (modalIsOpen) {
+  if (isPosting) {
     modalContent = (
-      <Modal onClose={hideModalHandler}>
+      <Modal onClose={onStopPosting}>
       <NewPost
-        onBodyChange={bodyChangeHandler}
-        onAuthorChange={authorChangeHandler}
+        onCancel={onStopPosting}
+        onAddPost={addPostHandler}
       />
     </Modal>
     );
-  }
+    }
 
   return (
     <>
       {modalContent}
       <ul className={styles.posts}>
-        <Post author={enteredAuthor} body={enteredBody} />
-        <Post author="Zoe" body="Learning isn't fun" />
-        <Post author="Mortiton" body="BOOOO" />
+        {posts.map((post, index) => (
+          <Post key={index} body={post.body} author={post.author} />
+        ))}
       </ul>
     </>
   );
